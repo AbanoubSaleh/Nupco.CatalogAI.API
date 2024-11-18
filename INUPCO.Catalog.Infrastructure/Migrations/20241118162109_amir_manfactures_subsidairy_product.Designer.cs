@@ -4,6 +4,7 @@ using INUPCO.Catalog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace INUPCO.Catalog.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241118162109_amir_manfactures_subsidairy_product")]
+    partial class amir_manfactures_subsidairy_product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,22 +195,6 @@ namespace INUPCO.Catalog.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Manufacturers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Country = "USA",
-                            CreatedDate = new DateTime(2024, 11, 18, 16, 54, 33, 299, DateTimeKind.Utc).AddTicks(4145),
-                            Name = "Pfizer"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Country = "Switzerland",
-                            CreatedDate = new DateTime(2024, 11, 18, 16, 54, 33, 299, DateTimeKind.Utc).AddTicks(4149),
-                            Name = "Novartis"
-                        });
                 });
 
             modelBuilder.Entity("INUPCO.Catalog.Domain.Entities.Products.Product", b =>
@@ -256,34 +243,6 @@ namespace INUPCO.Catalog.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Products", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2024, 11, 18, 16, 54, 33, 299, DateTimeKind.Utc).AddTicks(4208),
-                            ManufacturerId = 1,
-                            Name = "Lipitor",
-                            SubsidiaryId = 1,
-                            TradeCode = "PFE001"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(2024, 11, 18, 16, 54, 33, 299, DateTimeKind.Utc).AddTicks(4210),
-                            ManufacturerId = 1,
-                            Name = "Xarelto",
-                            TradeCode = "PFE002"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDate = new DateTime(2024, 11, 18, 16, 54, 33, 299, DateTimeKind.Utc).AddTicks(4212),
-                            ManufacturerId = 2,
-                            Name = "Entresto",
-                            SubsidiaryId = 2,
-                            TradeCode = "NOV001"
-                        });
                 });
 
             modelBuilder.Entity("INUPCO.Catalog.Domain.Entities.Subsidiaries.Subsidiary", b =>
@@ -327,24 +286,6 @@ namespace INUPCO.Catalog.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Subsidiaries", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Country = "Germany",
-                            CreatedDate = new DateTime(2024, 11, 18, 16, 54, 33, 299, DateTimeKind.Utc).AddTicks(4189),
-                            ManufacturerId = 1,
-                            Name = "Pfizer Germany GmbH"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Country = "Spain",
-                            CreatedDate = new DateTime(2024, 11, 18, 16, 54, 33, 299, DateTimeKind.Utc).AddTicks(4190),
-                            ManufacturerId = 2,
-                            Name = "Novartis Spain SA"
-                        });
                 });
 
             modelBuilder.Entity("INUPCO.Catalog.Domain.Entities.Customers.CustomerGenericItemPharmaCodeMapping", b =>

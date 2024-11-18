@@ -8,6 +8,7 @@ using INUPCO.Catalog.Infrastructure.Repositories.Customers;
 using INUPCO.Catalog.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Nupco.CatalogAI.API.Configuration;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -37,6 +38,8 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IExcelProcessor, ExcelProcessor>();
 builder.Services.AddScoped<INUPCO.Catalog.Domain.Contracts.Customers.ICustomerGenericItemMappingRepository, CustomerGenericItemMappingRepository>();
+builder.Services.AddScoped<IManufacturerRepository, ManufacturerRepository>();
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 

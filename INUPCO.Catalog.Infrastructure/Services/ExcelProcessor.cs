@@ -102,4 +102,79 @@ public class ExcelProcessor : IExcelProcessor
         stream.Position = 0;
         return stream.ToArray();
     }
+
+    public async Task<List<SubsidiaryImportDto>> ProcessSubsidiariesFromExcel(Stream fileStream)
+    {
+        var subsidiaries = new List<SubsidiaryImportDto>();
+        using var workbook = new XLWorkbook(fileStream);
+        var worksheet = workbook.Worksheet(1);
+        var rows = worksheet.RowsUsed().Skip(1); // Skip header row
+
+        foreach (var row in rows)
+        {
+            if (row.IsEmpty()) continue;
+
+            subsidiaries.Add(new SubsidiaryImportDto
+            {
+                Name = row.Cell(1).GetString().Trim(),
+                Country = row.Cell(2).GetString().Trim(),
+                ManufacturerName = row.Cell(3).GetString().Trim(),
+                ManufacturerCountry = row.Cell(4).GetString().Trim()
+            });
+        }
+
+        return subsidiaries;
+    }
+
+    public async Task<List<ManufacturerImportDto>> ProcessManufacturersFromExcel(Stream fileStream)
+    {
+        var manufacturers = new List<ManufacturerImportDto>();
+        using var workbook = new XLWorkbook(fileStream);
+        var worksheet = workbook.Worksheet(1);
+        var rows = worksheet.RowsUsed().Skip(1); // Skip header row
+
+        foreach (var row in rows)
+        {
+            if (row.IsEmpty()) continue;
+
+            manufacturers.Add(new ManufacturerImportDto
+            {
+                TradeCode = row.Cell(1).GetString().Trim(),
+                Name = row.Cell(2).GetString().Trim(),
+                Country = row.Cell(3).GetString().Trim()
+            });
+        }
+
+        return manufacturers;
+    }
+
+    public byte[] GenerateManufacturerTemplate()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Product Trade Code Update");
+
+        // Add headers
+        worksheet.Cell(1, 1).Value = "Trade Code";
+        worksheet.Cell(1, 2).Value = "Manufacturer/Subsidiary Name";
+        worksheet.Cell(1, 3).Value = "Country";
+
+        // Format headers
+        var headerRow = worksheet.Row(1);
+        headerRow.Style.Font.Bold = true;
+        headerRow.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+        // Add sample data
+        worksheet.Cell(2, 1).Value = "PFE001";
+        worksheet.Cell(2, 2).Value = "Pfizer Germany GmbH";
+        worksheet.Cell(2, 3).Value = "Germany";
+
+        // Adjust column widths
+        worksheet.Column(1).Width = 15;
+        worksheet.Column(2).Width = 35;
+        worksheet.Column(3).Width = 20;
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
 } 
