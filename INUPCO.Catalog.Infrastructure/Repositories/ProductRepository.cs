@@ -68,17 +68,35 @@ public class ProductRepository : IProductRepository
             .ToListAsync();
     }
 
-    public async Task<List<Product>> GetByTradeCodesAsync(IEnumerable<string> tradeCodes)
+    public async Task<Dictionary<string, Product>> GetByTradeCodesAsync(IEnumerable<string> tradeCodes)
     {
-        return await _context.Products
+        var products = await _context.Products
             .Include(x => x.Manufacturer)
             .Include(x => x.Subsidiary)
             .Where(x => tradeCodes.Contains(x.TradeCode))
             .ToListAsync();
+
+        return products.ToDictionary(p => p.TradeCode, p => p);
     }
 
     public async Task BulkUpdateAsync(IEnumerable<Product> products)
     {
-        await _context.BulkUpdateAsync(products.ToList());
+        // Remove duplicates by ID
+        var distinctProducts = products
+            .GroupBy(p => p.Id)
+            .Select(g => g.First())
+            .ToList();
+
+        var config = new BulkConfig 
+        { 
+            PreserveInsertOrder = false,
+            SetOutputIdentity = false,
+            BatchSize = 100,
+            UseTempDB = false,
+            EnableShadowProperties = true
+        };
+        
+        await _context.BulkUpdateAsync(distinctProducts, config);
+        await _context.SaveChangesAsync();
     }
 } 
