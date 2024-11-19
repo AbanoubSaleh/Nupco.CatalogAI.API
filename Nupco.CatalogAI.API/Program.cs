@@ -41,6 +41,7 @@ builder.Services.AddScoped<IExcelProcessor, ExcelProcessor>();
 builder.Services.AddScoped<INUPCO.Catalog.Domain.Contracts.Customers.ICustomerGenericItemMappingRepository, CustomerGenericItemMappingRepository>();
 builder.Services.AddScoped<IManufacturerRepository, ManufacturerRepository>();
 builder.Services.AddInfrastructureServices();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

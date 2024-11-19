@@ -21,6 +21,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INUPCO.Catalog.SharedConsta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageIntegration", "..\ImageIntegration\ImageIntegration.csproj", "{3712CAA9-B891-4B94-BD74-37F998EE15E0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INUPCO.Catalog.Application.Tests", "..\tests\INUPCO.Catalog.Application.Tests\INUPCO.Catalog.Application.Tests.csproj", "{B9343AB1-7E21-4203-9A8A-E4F82C3ABFE8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INUPCO.Catalog.Domain.Tests", "..\tests\INUPCO.Catalog.Domain.Tests\INUPCO.Catalog.Domain.Tests.csproj", "{03186E7F-CF44-46AF-B0FF-A108C335D0D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INUPCO.Catalog.Infrastructure.Tests", "..\tests\INUPCO.Catalog.Infrastructure.Tests\INUPCO.Catalog.Infrastructure.Tests.csproj", "{3286BCEE-98BC-473F-A7B6-7EA26955CAB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CB0A0EA0-D1DA-4BFA-92ED-1D7263E5E32A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,9 +71,26 @@ Global
 		{3712CAA9-B891-4B94-BD74-37F998EE15E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3712CAA9-B891-4B94-BD74-37F998EE15E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3712CAA9-B891-4B94-BD74-37F998EE15E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9343AB1-7E21-4203-9A8A-E4F82C3ABFE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9343AB1-7E21-4203-9A8A-E4F82C3ABFE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9343AB1-7E21-4203-9A8A-E4F82C3ABFE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9343AB1-7E21-4203-9A8A-E4F82C3ABFE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03186E7F-CF44-46AF-B0FF-A108C335D0D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03186E7F-CF44-46AF-B0FF-A108C335D0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03186E7F-CF44-46AF-B0FF-A108C335D0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03186E7F-CF44-46AF-B0FF-A108C335D0D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3286BCEE-98BC-473F-A7B6-7EA26955CAB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3286BCEE-98BC-473F-A7B6-7EA26955CAB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3286BCEE-98BC-473F-A7B6-7EA26955CAB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3286BCEE-98BC-473F-A7B6-7EA26955CAB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B9343AB1-7E21-4203-9A8A-E4F82C3ABFE8} = {CB0A0EA0-D1DA-4BFA-92ED-1D7263E5E32A}
+		{03186E7F-CF44-46AF-B0FF-A108C335D0D7} = {CB0A0EA0-D1DA-4BFA-92ED-1D7263E5E32A}
+		{3286BCEE-98BC-473F-A7B6-7EA26955CAB6} = {CB0A0EA0-D1DA-4BFA-92ED-1D7263E5E32A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {770F769E-26DA-4275-9034-011C338A9791}

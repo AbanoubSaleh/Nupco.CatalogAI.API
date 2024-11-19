@@ -84,7 +84,7 @@ public class ProcessManufacturerFileCommandHandler
                         return;
                     }
 
-                    if (!manufacturersByName.TryGetValue(import.Name, out var manufacturer))
+                    if (manufacturersByName == null || !manufacturersByName.TryGetValue(import.Name, out var manufacturer))
                     {
                         errors.Add($"Manufacturer {import.Name} not found");
                         return;
