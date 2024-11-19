@@ -54,4 +54,12 @@ public class SubsidiaryRepository : ISubsidiaryRepository
             .Where(x => x.ManufacturerId == manufacturerId)
             .ToListAsync();
     }
+
+    public async Task<Subsidiary?> GetByManufacturerAndCountryAsync(int manufacturerId, string country)
+    {
+        return await _context.Subsidiaries
+            .Include(x => x.Products)
+            .Include(x => x.Manufacturer)
+            .FirstOrDefaultAsync(x => x.ManufacturerId == manufacturerId && x.Country == country);
+    }
 } 

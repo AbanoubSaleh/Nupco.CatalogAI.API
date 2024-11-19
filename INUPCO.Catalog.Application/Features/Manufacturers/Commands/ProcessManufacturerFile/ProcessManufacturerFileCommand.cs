@@ -59,6 +59,7 @@ public class ProcessManufacturerFileCommandHandler
         {
             try
             {
+                // Step 1: Check for product with trade code
                 var product = await _productRepository.GetByTradeCodeAsync(import.TradeCode);
                 if (product == null)
                 {
@@ -66,18 +67,40 @@ public class ProcessManufacturerFileCommandHandler
                     continue;
                 }
 
-                var manufacturer = await _manufacturerRepository.GetByNameAndCountryAsync(import.Name, import.Country);
-                var subsidiary = await _subsidiaryRepository.GetByNameAndCountryAsync(import.Name, import.Country);
-
-                if (manufacturer != null || subsidiary != null)
+                // Step 2: Check for manufacturer
+                var manufacturer = await _manufacturerRepository.GetByNameAsync(import.Name);
+                if (manufacturer == null)
                 {
-                    product.UpdateDetails(product.Name, import.TradeCode);
+                    errors.Add($"Manufacturer {import.Name} not found");
+                    continue;
+                }
+
+                // Step 3: Check if manufacturer is in the same country
+                if (manufacturer.Country == import.Country)
+                {
+                    // Assign product to manufacturer directly
+                    product.AssignToManufacturer(manufacturer.Id);
+                    await _productRepository.UpdateAsync(product);
+                    processedCount++;
+                    continue;
+                }
+
+                // Step 4: If manufacturer exists but different country, check subsidiaries
+                var subsidiaryInCountry = await _subsidiaryRepository.GetByManufacturerAndCountryAsync(
+                    manufacturer.Id, 
+                    import.Country
+                );
+
+                if (subsidiaryInCountry != null)
+                {
+                    // Assign product to subsidiary
+                    product.AssignToSubsidiary(subsidiaryInCountry);
                     await _productRepository.UpdateAsync(product);
                     processedCount++;
                 }
                 else
                 {
-                    errors.Add($"No manufacturer or subsidiary found for {import.Name} in {import.Country}. Please create manufacturer first.");
+                    errors.Add($"No subsidiary found for manufacturer {import.Name} in country {import.Country}");
                 }
             }
             catch (Exception ex)

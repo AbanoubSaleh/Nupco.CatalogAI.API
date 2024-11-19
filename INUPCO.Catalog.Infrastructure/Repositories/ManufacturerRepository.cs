@@ -2,6 +2,7 @@ using INUPCO.Catalog.Domain.Contracts;
 using INUPCO.Catalog.Domain.Entities.Manufacturers;
 using INUPCO.Catalog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using EFCore.BulkExtensions;
 
 namespace INUPCO.Catalog.Infrastructure.Repositories;
 
@@ -45,5 +46,32 @@ public class ManufacturerRepository : IManufacturerRepository
     {
         return await _context.Manufacturers
             .AnyAsync(x => x.Name == name && x.Country == country);
+    }
+
+    public async Task<Manufacturer?> GetByNameAsync(string name)
+    {
+        return await _context.Manufacturers
+            .Include(x => x.Subsidiaries)
+            .FirstOrDefaultAsync(x => x.Name == name);
+    }
+
+    public async Task<List<Manufacturer>> GetByNamesAsync(IEnumerable<string> names)
+    {
+        return await _context.Manufacturers
+            .Include(x => x.Subsidiaries)
+            .Where(x => names.Contains(x.Name))
+            .ToListAsync();
+    }
+
+    public async Task BulkUpdateAsync(IEnumerable<Manufacturer> manufacturers)
+    {
+        var config = new BulkConfig 
+        { 
+            PreserveInsertOrder = true,
+            SetOutputIdentity = true,
+            BatchSize = 100
+        };
+        await _context.BulkUpdateAsync(manufacturers.ToList(), config);
+        await _context.SaveChangesAsync();
     }
 } 

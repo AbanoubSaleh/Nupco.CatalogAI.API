@@ -1,3 +1,4 @@
+using EFCore.BulkExtensions;
 using INUPCO.Catalog.Domain.Contracts;
 using INUPCO.Catalog.Domain.Entities.Products;
 using INUPCO.Catalog.Infrastructure.Persistence;
@@ -65,5 +66,19 @@ public class ProductRepository : IProductRepository
             .Include(x => x.Subsidiary)
             .Where(x => x.SubsidiaryId == subsidiaryId)
             .ToListAsync();
+    }
+
+    public async Task<List<Product>> GetByTradeCodesAsync(IEnumerable<string> tradeCodes)
+    {
+        return await _context.Products
+            .Include(x => x.Manufacturer)
+            .Include(x => x.Subsidiary)
+            .Where(x => tradeCodes.Contains(x.TradeCode))
+            .ToListAsync();
+    }
+
+    public async Task BulkUpdateAsync(IEnumerable<Product> products)
+    {
+        await _context.BulkUpdateAsync(products.ToList());
     }
 } 

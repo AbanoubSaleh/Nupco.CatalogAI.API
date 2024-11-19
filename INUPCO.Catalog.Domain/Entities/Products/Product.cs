@@ -12,10 +12,28 @@ public class Product : BaseEntity
     public string TradeCode { get; private set; } = string.Empty;
     
     public int ManufacturerId { get; private set; }
-    public Manufacturer Manufacturer { get; private set; } = null!;
+    public Manufacturer? Manufacturer { get; private set; }
     
     public int? SubsidiaryId { get; private set; }
     public Subsidiary? Subsidiary { get; private set; }
+
+    public void AssignToManufacturer(int manufacturerId)
+    {
+        ManufacturerId = manufacturerId;
+        SubsidiaryId = null;
+        Subsidiary = null;
+    }
+
+    public void AssignToSubsidiary(Subsidiary subsidiary)
+    {
+        if (subsidiary == null)
+            throw new ArgumentNullException(nameof(subsidiary));
+
+        SubsidiaryId = subsidiary.Id;
+        Subsidiary = subsidiary;
+        ManufacturerId = subsidiary.ManufacturerId;
+        Manufacturer = subsidiary.Manufacturer;
+    }
 
     public static Product Create(
         string name, 
@@ -40,19 +58,7 @@ public class Product : BaseEntity
             SubsidiaryId = subsidiary?.Id
         };
 
-        manufacturer.AddProduct(product);
-        subsidiary?.AddProduct(product);
-
         return product;
-    }
-
-    public void UpdateSubsidiary(Subsidiary? subsidiary)
-    {
-        if (subsidiary?.ManufacturerId != ManufacturerId)
-            throw new InvalidOperationException("Subsidiary must belong to the same manufacturer");
-            
-        Subsidiary = subsidiary;
-        SubsidiaryId = subsidiary?.Id;
     }
 
     public void UpdateDetails(string name, string tradeCode)

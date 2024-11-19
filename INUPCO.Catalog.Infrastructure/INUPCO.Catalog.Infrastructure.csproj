@@ -23,6 +23,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="EFCore.BulkExtensions" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
