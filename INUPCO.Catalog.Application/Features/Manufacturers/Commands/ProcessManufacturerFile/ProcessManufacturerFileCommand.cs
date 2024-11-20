@@ -3,7 +3,6 @@ using INUPCO.Catalog.Domain.Contracts;
 using INUPCO.Catalog.Domain.Entities.Manufacturers;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
@@ -37,20 +36,17 @@ public class ProcessManufacturerFileCommandHandler
     private readonly IManufacturerRepository _manufacturerRepository;
     private readonly ISubsidiaryRepository _subsidiaryRepository;
     private readonly IProductRepository _productRepository;
-    private readonly IMemoryCache _cache;
 
     public ProcessManufacturerFileCommandHandler(
         IExcelProcessor excelProcessor,
         IManufacturerRepository manufacturerRepository,
         ISubsidiaryRepository subsidiaryRepository,
-        IProductRepository productRepository,
-        IMemoryCache cache)
+        IProductRepository productRepository)
     {
         _excelProcessor = excelProcessor;
         _manufacturerRepository = manufacturerRepository;
         _subsidiaryRepository = subsidiaryRepository;
         _productRepository = productRepository;
-        _cache = cache;
     }
 
     public async Task<ProcessManufacturerFileResult> Handle(
@@ -63,8 +59,9 @@ public class ProcessManufacturerFileCommandHandler
         using var stream = request.File.OpenReadStream();
         var imports = await _excelProcessor.ProcessManufacturersFromExcel(stream);
 
-        var manufacturersByName = await GetManufacturersCache(
+        var manufacturers = await _manufacturerRepository.GetByNamesAsync(
             imports.Select(i => i.Name).Distinct().ToList());
+        var manufacturersByName = manufacturers.ToDictionary(m => m.Name, m => m);
 
         var productsByTradeCode = await _productRepository.GetByTradeCodesAsync(
             imports.Select(i => i.TradeCode).Distinct().ToList());
@@ -97,16 +94,8 @@ public class ProcessManufacturerFileCommandHandler
                         return;
                     }
 
-                    var subsidiaryKey = $"{manufacturer.Id}:{import.Country}";
-                    var subsidiary = await _cache.GetOrCreateAsync(
-                        subsidiaryKey,
-                        async entry =>
-                        {
-                            entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                            return await _subsidiaryRepository.GetByManufacturerAndCountryAsync(
-                                manufacturer.Id, 
-                                import.Country);
-                        });
+                    var subsidiary = manufacturer.Subsidiaries
+                        .FirstOrDefault(s => s.Country == import.Country);
 
                     if (subsidiary != null)
                     {
@@ -139,19 +128,5 @@ public class ProcessManufacturerFileCommandHandler
             Errors = errors.ToList(),
             ErrorReport = errors.Any() ? _excelProcessor.GenerateErrorReport(errors.ToList()) : null
         };
-    }
-
-    private async Task<Dictionary<string, Manufacturer>?> GetManufacturersCache(List<string> manufacturerNames)
-    {
-        const string cacheKey = "AllManufacturers";
-        
-        return await _cache.GetOrCreateAsync(
-            cacheKey,
-            async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                var manufacturers = await _manufacturerRepository.GetByNamesAsync(manufacturerNames);
-                return manufacturers.ToDictionary(m => m.Name, m => m);
-            });
     }
 } 
