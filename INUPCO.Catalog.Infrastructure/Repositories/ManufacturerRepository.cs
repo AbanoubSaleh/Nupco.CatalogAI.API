@@ -55,7 +55,7 @@ public class ManufacturerRepository : IManufacturerRepository
             .FirstOrDefaultAsync(x => x.Name == name);
     }
 
-    public async Task<List<Manufacturer>> GetByNamesAsync(IEnumerable<string> names)
+    public virtual async Task<List<Manufacturer>> GetByNamesAsync(IEnumerable<string> names)
     {
         return await _context.Manufacturers
             .Include(x => x.Subsidiaries)

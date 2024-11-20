@@ -11,7 +11,7 @@ public class Manufacturer : BaseEntity
     
     private Manufacturer() { } // For EF Core
 
-    public string Name { get; private set; } = string.Empty;
+    public virtual string Name { get; private set; } = string.Empty;
     public string Country { get; private set; } = string.Empty;
     
     public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
